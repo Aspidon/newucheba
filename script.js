@@ -1,6 +1,10 @@
 "use strict";
 
-let numberOfFilms = prompt("Сколько фильмов вы уже посмотрели?", "");
+let numberOfFilms;
+
+function start () {
+    numberOfFilms = prompt("Сколько фильмов вы уже посмотрели?", "");
+}
 
 let personalMovieDB = {
     count: numberOfFilms,
