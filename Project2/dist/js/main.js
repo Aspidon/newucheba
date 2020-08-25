@@ -41,4 +41,16 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Таймер
+
+    const deadLine = '2020-08-27';
+
+    function getTimeRemaining(endtime) {
+        const t = Date.parse(endtime) - Data.parse(new Date()),
+            days = Math.floor(t / (1000*60*60*24)),
+            hours = Math.floor((t / (1000*60*60)) % 24),
+            minuts = Math.floor((t / (1000*60)) % 60),
+            seconds = Math.floor((t / (1000)) % 60);
+    }
+
 });
