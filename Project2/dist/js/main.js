@@ -6,8 +6,6 @@ window.addEventListener('DOMContentLoaded', () => {
         tabsContent = document.querySelectorAll('.tabcontent'),
         tabsParent = document.querySelector('.tabheader__items');
 
-    console.log(tabsContent[0]);
-
     function hideTabContent() {
         tabsContent.forEach(item => {
             item.classList.add('hide');
@@ -47,9 +45,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
-            days = Math.floor(t / (1000*60*60*24)),
-            hours = Math.floor((t / (1000*60*60)) % 24),
-            minutes = Math.floor((t / (1000*60)) % 60),
+            days = Math.floor(t / (1000 * 60 * 60 * 24)),
+            hours = Math.floor((t / (1000 * 60 * 60)) % 24),
+            minutes = Math.floor((t / (1000 * 60)) % 60),
             seconds = Math.floor((t / (1000)) % 60);
 
         return {
@@ -95,4 +93,52 @@ window.addEventListener('DOMContentLoaded', () => {
 
     setClock('.timer', deadLine);
 
+    // Modal-window
+
+    let modalBtn = document.querySelectorAll("button[data-modal]"),
+        modalBlock = document.querySelector(".modal"),
+        closeBtn = modalBlock.querySelector("div[data-close]");
+
+    function openModal() {
+        modalBlock.classList.add("show", "fade");
+        modalBlock.classList.remove("hide");
+        clearInterval(openModalTimer);
+    }
+
+    function closeModal() {
+        modalBlock.classList.add("hide");
+        modalBlock.classList.remove("show", "fade");
+    }
+
+    modalBtn.forEach(item => {
+        item.addEventListener('click', (event) => {
+            event.preventDefault;
+            openModal();
+        });
+
+        modalBlock.addEventListener('click', (event) => {
+            event.preventDefault;
+
+            let target = event.target;
+
+            if (target && target.classList.contains('modal__close')) {
+                closeModal();
+            }
+
+            if (target === modalBlock) {
+                closeModal();
+            }
+        });
+    });
+
+    let openModalTimer = setTimeout(openModal, 6000);
+
+    function scrollShowModal() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', scrollShowModal);
+            clearInterval(openModalTimer);
+        }
+    }
+    window.addEventListener('scroll', scrollShowModal);
 });
