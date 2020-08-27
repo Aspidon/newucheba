@@ -2,6 +2,8 @@
 
 window.addEventListener('DOMContentLoaded', () => {
 
+    // Tabs ====================================================================
+
     let tabs = document.querySelectorAll('.tabheader__item'),
         tabsContent = document.querySelectorAll('.tabcontent'),
         tabsParent = document.querySelector('.tabheader__items');
@@ -39,7 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Таймер
+    // Timer =================================================================================
 
     const deadLine = '2020-08-27';
 
@@ -93,7 +95,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     setClock('.timer', deadLine);
 
-    // Modal-window
+    // Modal-window ===================================================================
 
     let modalBtn = document.querySelectorAll("button[data-modal]"),
         modalBlock = document.querySelector(".modal"),
