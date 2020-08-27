@@ -133,7 +133,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    let openModalTimer = setTimeout(openModal, 6000);
+    //let openModalTimer = setTimeout(openModal, 6000);
 
     function scrollShowModal() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -143,4 +143,41 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
     window.addEventListener('scroll', scrollShowModal);
+
+    // Создание карточек при помощи классов
+
+    class MenuCard {
+        constructor (src, alt, title, descr, price, parentSelector) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.parent = document.querySelector(parentSelector);
+            this.transfer = 27;
+            this.changeToUAH;
+        }
+        changeToUAH() {
+            this.price = this.price * this.transfer;
+        }
+        render() {
+            const div = document.createElement("div");
+            div.innerHTML = `
+                <div class="menu__item">
+                <img src="img/tabs/vegy.jpg" alt="vegy">
+                <h3 class="menu__item-subtitle">Меню "Фитнес"</h3>
+                <div class="menu__item-descr">Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!</div>
+                <div class="menu__item-divider"></div>
+                <div class="menu__item-price">
+                    <div class="menu__item-cost">Цена:</div>
+                    <div class="menu__item-total"><span>229</span> грн/день</div>
+                </div>
+                </div>
+            `;
+        }
+    }
+
+
+
+
 });
