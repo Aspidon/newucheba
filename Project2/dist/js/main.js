@@ -97,54 +97,50 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Modal-window ===================================================================
 
-    let modalBtn = document.querySelectorAll("button[data-modal]"),
-        modalBlock = document.querySelector(".modal"),
-        closeBtn = modalBlock.querySelector("div[data-close]");
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal');
 
-    function openModal() {
-        modalBlock.classList.add("show", "fade");
-        modalBlock.classList.remove("hide");
-        clearInterval(openModalTimer);
-    }
-
-    function closeModal() {
-        modalBlock.classList.add("hide");
-        modalBlock.classList.remove("show", "fade");
-    }
-
-    modalBtn.forEach(item => {
-        item.addEventListener('click', (event) => {
-            event.preventDefault;
-            openModal();
-        });
-
-        modalBlock.addEventListener('click', (event) => {
-            event.preventDefault;
-
-            let target = event.target;
-
-            if (target && target.classList.contains('modal__close')) {
-                closeModal();
-            }
-
-            if (target === modalBlock) {
-                closeModal();
-            }
-        });
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', openModal);
     });
 
-    //let openModalTimer = setTimeout(openModal, 6000);
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
 
-    function scrollShowModal() {
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);
+    }
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.getAttribute('data-close') == "") {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === "Escape" && modal.classList.contains('show')) { 
+            closeModal();
+        }
+    });
+
+    const modalTimerId = setTimeout(openModal, 300000);
+    // Изменил значение, чтобы не отвлекало
+
+    function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
             openModal();
-            window.removeEventListener('scroll', scrollShowModal);
-            clearInterval(openModalTimer);
+            window.removeEventListener('scroll', showModalByScroll);
         }
     }
-    window.addEventListener('scroll', scrollShowModal);
+    window.addEventListener('scroll', showModalByScroll);
 
-    // Создание карточек при помощи классов
+    // Создание карточек при помощи классов ===========================================================
 
     class MenuCard {
         constructor (src, alt, title, descr, price, parentSelector) {
@@ -259,5 +255,22 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        // Perfect modal show
+
+        function showThanksModal() {
+            const prevModalDialog = document.querySelector(".modalDialog");
+
+            prevModalDialog.classList.add('hide');
+            openModal();
+
+            const thanksModal = document.createElement('div');
+            thanksModal.classList.add('modal__dialog');
+            thanksModal.innerHTML = `
+                <div class="modal__content">
+                    <div class="modal__close" data-close>&times;</div>
+                    <div class="modal__title"></div>
+                </div>
+            `
+        }
 
 });
