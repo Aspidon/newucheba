@@ -124,7 +124,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.code === "Escape" && modal.classList.contains('show')) { 
+        if (e.code === "Escape" && modal.classList.contains('show')) {
             closeModal();
         }
     });
@@ -143,7 +143,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Создание карточек при помощи классов ===========================================================
 
     class MenuCard {
-        constructor (src, alt, title, descr, price, parentSelector) {
+        constructor(src, alt, title, descr, price, parentSelector) {
             this.src = src;
             this.alt = alt;
             this.title = title;
@@ -204,73 +204,115 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Отправка данных на сервер // Send data to server ===================================================================
 
-        const forms = document.querySelectorAll('form');
+    const forms = document.querySelectorAll('form');
 
-        const message = {
-            loading: "Загрузка...",
-            success: "Скоро мы с вами свяжемся!",
-            failure: "Чтото пошло не так!"
-        };
+    const message = {
+        loading: "Загрузка...",
+        success: "Скоро мы с вами свяжемся!",
+        failure: "Чтото пошло не так!"
+    };
 
-        forms.forEach(item => {
-            postData(item);
-        });
+    forms.forEach(item => {
+        postData(item);
+    });
 
-        function postData(form) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-                const statusMessage = document.createElement('div');
-                statusMessage.classList.add('status');
-                statusMessage.textContent = message.loading;
-                form.append(statusMessage);
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
 
-                const request = new XMLHttpRequest();
-                request.open('POST', 'server.php');
+            //form.append(statusMessage);
+            form.insertAdjacentElement('afterend', statusMessage);
 
-                request.setRequestHeader('Content-type', 'application/json');
-                const formData = new FormData(form);
+            /* Отправка данных, старая форма
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
 
-                let object = {};
-                formData.forEach((item, key) => {
-                    object[key] = item;
-                });
+            request.setRequestHeader('Content-type', 'application/json');
+            const formData = new FormData(form);
 
-                const json = JSON.stringify(object);
-
-                request.send(json);
-
-                request.addEventListener('load', () => {
-                    if (request.status === 200) {
-                        console.log(request.response);
-                        statusMessage.textContent = message.success;
-                        form.reset();
-                        setTimeout(() => {
-                            statusMessage.remove();
-                        }, 2000);
-                    } else {
-                        statusMessage.textContent = message.failure;
-                    }
-                });
+            let object = {};
+            formData.forEach((item, key) => {
+                object[key] = item;
             });
-        }
 
-        // Perfect modal show
+            const json = JSON.stringify(object);
 
-        function showThanksModal() {
-            const prevModalDialog = document.querySelector(".modalDialog");
+            request.send(json);
 
-            prevModalDialog.classList.add('hide');
-            openModal();
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    showThanksModal(message.success);
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, 2000);
+                } else {
+                    showThanksModal(message.failure);
+                }
+            });
+            */
 
-            const thanksModal = document.createElement('div');
-            thanksModal.classList.add('modal__dialog');
-            thanksModal.innerHTML = `
+            // Отправка данных, новая форма
+
+            const formData = new FormData(form);
+
+            let object = {};
+
+            formData.forEach((item, key) => {
+                object[key] = item;
+            });
+
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            }).then(data => {
+                return data.text();
+            }).then(data => {
+                console.log(data);
+                showThanksModal(message.success);
+                setTimeout(() => {
+                    statusMessage.remove();
+                }, 2000);
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() => {
+                form.reset();
+            });
+        });
+    }
+
+    // Perfect modal show
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector(".modal__dialog");
+
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
                 <div class="modal__content">
                     <div class="modal__close" data-close>&times;</div>
-                    <div class="modal__title"></div>
+                    <div class="modal__title">${message}</div>
                 </div>
-            `
-        }
+            `;
+
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000);
+    }
 
 });
