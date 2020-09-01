@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Timer =================================================================================
 
-    const deadLine = '2020-08-27';
+    const deadLine = '2020-09-27';
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -206,6 +206,58 @@ window.addEventListener('DOMContentLoaded', () => {
     ).render();
 
 
+    // Отправка данных на сервер // Send data to server ===================================================================
+
+        const forms = document.querySelectorAll('form');
+
+        const message = {
+            loading: "Загрузка...",
+            success: "Скоро мы с вами свяжемся!",
+            failure: "Чтото пошло не так!"
+        };
+
+        forms.forEach(item => {
+            postData(item);
+        });
+
+        function postData(form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const statusMessage = document.createElement('div');
+                statusMessage.classList.add('status');
+                statusMessage.textContent = message.loading;
+                form.append(statusMessage);
+
+                const request = new XMLHttpRequest();
+                request.open('POST', 'server.php');
+
+                request.setRequestHeader('Content-type', 'application/json');
+                const formData = new FormData(form);
+
+                let object = {};
+                formData.forEach((item, key) => {
+                    object[key] = item;
+                });
+
+                const json = JSON.stringify(object);
+
+                request.send(json);
+
+                request.addEventListener('load', () => {
+                    if (request.status === 200) {
+                        console.log(request.response);
+                        statusMessage.textContent = message.success;
+                        form.reset();
+                        setTimeout(() => {
+                            statusMessage.remove();
+                        }, 2000);
+                    } else {
+                        statusMessage.textContent = message.failure;
+                    }
+                });
+            });
+        }
 
 
 });
