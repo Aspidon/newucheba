@@ -564,4 +564,13 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Calc ==========================================================
+
+    let resault = document.querySelector('.calculating__result span'),
+        sex, height, weigth, age, ratio;
+
+    function calcTotal() {
+        
+    }
+
 });
